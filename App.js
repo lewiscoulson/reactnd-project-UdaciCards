@@ -11,6 +11,8 @@ import Quiz from './components/Quiz'
 import NewDeck from './components/NewDeck'
 import AddCard from './components/AddCard'
 
+import { setLocalNotification } from './utils/helpers'
+
 const Tabs = TabNavigator({
   Decks: {
     screen: Decks,
@@ -81,6 +83,7 @@ const MainNavigator = StackNavigator({
 
 export default class App extends React.Component {
   componentDidMount() {
+    setLocalNotification()
   }
   render() {
     return (

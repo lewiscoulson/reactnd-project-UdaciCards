@@ -14,7 +14,7 @@ class DeckDetail extends Component {
   }
 
   render() {
-    const deck = this.props.navigation.state.params.deck;
+    const {deck, refresh} = this.props.navigation.state.params;
 
     return (
       <View style={styles.container}>
@@ -22,16 +22,19 @@ class DeckDetail extends Component {
         <Text style={styles.cards}>{deck.questions.length} cards</Text>
 
         <Button
-          onPress={() => this.props.navigation.navigate(
-            'AddCard'
-        )}>
+          onPress={() => {
+            this.props.navigation.navigate(
+                'AddCard',
+                { deck, refresh }
+            )}
+          }>
           Add Card
         </Button>
 
         <Button
           onPress={() => this.props.navigation.navigate(
             'Quiz',
-            { deck }
+            { deck}
         )}>
           Start Quiz
         </Button>

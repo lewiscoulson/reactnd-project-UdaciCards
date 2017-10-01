@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { white, red, green } from '../utils/colors'
+import {
+  clearLocalNotification,
+  setLocalNotification
+} from '../utils/helpers'
 
 import TextButton from './TextButton'
 import Button from './Button'
@@ -47,7 +51,18 @@ class Quiz extends Component {
       this.setState({
         isQuizComplete: true
       })
+
+      clearLocalNotification()
+        .then(setLocalNotification)
     }
+  }
+
+  restartQuiz = () => {
+    this.setState({
+      currentQuestion: 0,
+      isQuizComplete: false,
+      score: this.state.questionsLength
+    })
   }
 
   render() {
@@ -68,7 +83,9 @@ class Quiz extends Component {
         </View>}
 
         {deck && isQuizComplete && <View>
-          <Text style={styles.title}>your score is {(score / questionsLength) * 100}%</Text>
+          <Text style={styles.title}>your score is {parseInt((score / questionsLength) * 100, 10)}%</Text>
+          <Button onPress={this.restartQuiz}>restart quiz</Button>
+          <Button onPress={() => this.props.navigation.goBack()}>back to deck</Button>
         </View>}
       </View>
     )

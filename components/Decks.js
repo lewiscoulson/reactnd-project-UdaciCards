@@ -1,52 +1,61 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { white } from '../utils/colors'
+
+import { getDecks } from '../utils/api'
 
 import DeckCard from './DeckCard'
 
 class Decks extends Component {
-    state = {
-      'React': {
-        title: 'React',
-        questions: [
-          {
-            question: 'What is React?',
-            answer: 'A library for managing user interfaces'
-          },
-          {
-            question: 'Where do you make Ajax requests in React?',
-            answer: 'The componentDidMount lifecycle event'
+  state = {
+  }
+
+  componentDidMount() {
+      getDecks()
+        .then((decks) => {
+          if (decks) {
+            this.setState({
+              decks: JSON.parse(decks)
+            })
           }
-        ]
-      },
-      'JavaScript': {
-        title: 'JavaScript',
-        questions: [
-          {
-            question: 'What is a closure?',
-            answer: 'The combination of a function and the lexical environment within which that function was declared.'
-          }
-        ]
-      }
-    }
+        })
+  }
+
+  reloadDecks = () => {
+    getDecks()
+      .then((decks) => {
+        if (decks) {
+          this.setState({
+            decks: JSON.parse(decks)
+          })
+        }
+      })
+  }
+
   render() {
-    const decks = Object.keys(this.state);
+    let decks = [];
+
+    if (this.state.decks) {
+      decks = Object.keys(this.state.decks);
+    }
 
     return (
       <View style={styles.container}>
-        {decks.map((deckTitle) => {
-          return (
-            <TouchableOpacity
-              key={deckTitle}
-              onPress={() => this.props.navigation.navigate(
-                'DeckDetail',
-                { deck: this.state[deckTitle] }
-              )}
-            >
-              <DeckCard deck={this.state[deckTitle]} />
-            </TouchableOpacity>
-          )
-        })}
+        <ScrollView>
+          {decks.map((deckTitle) => {
+            return (
+              <TouchableOpacity
+                key={deckTitle}
+                onPress={() => this.props.navigation.navigate(
+                  'DeckDetail',
+                  { deck: this.state.decks[deckTitle], refresh: this.reloadDecks }
+                )}
+              >
+                <DeckCard deck={this.state.decks[deckTitle]} />
+              </TouchableOpacity>
+            )
+          })}
+        </ScrollView>
       </View>
     )
   }
